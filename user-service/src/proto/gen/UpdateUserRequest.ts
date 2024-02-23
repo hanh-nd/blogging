@@ -2,6 +2,7 @@
 
 
 export interface UpdateUserRequest {
+  'userId'?: (number);
   'displayName'?: (string);
   'email'?: (string);
   '_displayName'?: "displayName";
@@ -9,6 +10,7 @@ export interface UpdateUserRequest {
 }
 
 export interface UpdateUserRequest__Output {
+  'userId'?: (number);
   'displayName'?: (string);
   'email'?: (string);
   '_displayName': "displayName";

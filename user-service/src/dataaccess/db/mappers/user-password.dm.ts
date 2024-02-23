@@ -1,8 +1,10 @@
 import { HttpStatus } from '@src/constants';
 import { ErrorWithStatus } from '@src/utils/errors';
-import { token } from 'brandi';
+import { LOGGER_TOKEN } from '@src/utils/logging';
+import { injected, token } from 'brandi';
 import { DataSource, EntityManager } from 'typeorm';
 import { Logger } from 'winston';
+import { MY_SQL_DATA_SOURCE_TOKEN } from '../client';
 import { UserPassword } from '../entities';
 
 export interface UserPasswordDataMapper {
@@ -47,5 +49,7 @@ export class UserPasswordDataMapperImpl implements UserPasswordDataMapper {
         return this.dataSource.transaction(callback);
     }
 }
+
+injected(UserPasswordDataMapperImpl, MY_SQL_DATA_SOURCE_TOKEN, LOGGER_TOKEN);
 
 export const USER_PASSWORD_DATA_MAPPER_TOKEN = token<UserPasswordDataMapper>('UserPasswordDataMapper');
