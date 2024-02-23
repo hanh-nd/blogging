@@ -8,8 +8,11 @@ service UserService {
     rpc GetUserByUserName(GetUserByUserNameRequest) returns (GetUserByUserNameResponse) {}
     rpc GetListUser(GetListUserRequest) returns (GetListUserResponse) {}
     rpc GetUserCount(GetUserCountRequest) returns (GetUserCountResponse) {}
+    rpc CreateUserPassword(CreateUserPasswordRequest) returns (CreateUserPasswordResponse) {}
+    rpc GetUserPasswordByUserId(GetUserPasswordByUserIdRequest) returns (GetUserPasswordByUserIdResponse) {}
 }
 
+// Bussiness logic
 message User {
     int32 user_id = 1;
     string user_name = 2;
@@ -17,6 +20,12 @@ message User {
     string email = 4;
 }
 
+message UserPassword {
+    int32 user_id = 1;
+    string password = 2;
+}
+
+// Request - Response
 message CreateUserRequest {
     string user_name = 1;
     optional string display_name = 2;
@@ -81,4 +90,21 @@ message GetUserCountRequest {
 
 message GetUserCountResponse {
     int32 count = 1;
+}
+
+message CreateUserPasswordRequest {
+    int32 user_id = 1;
+    string password = 2;
+}
+
+message CreateUserPasswordResponse {
+    UserPassword user_password = 1;
+}
+
+message GetUserPasswordByUserIdRequest {
+    int32 user_id = 1;
+}
+
+message GetUserPasswordByUserIdResponse {
+    UserPassword user_password = 1;
 }

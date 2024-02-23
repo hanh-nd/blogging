@@ -17,6 +17,8 @@ export class UserServiceHandlersFactory {
             GetUserByUserName: ({ request }, callback) => {},
             GetListUser: ({ request }, callback) => {},
             GetUserCount: ({ request }, callback) => {},
+            CreateUserPassword: ({ request }, callback) => {},
+            GetUserPasswordByUserId: ({ request }, callback) => {},
         };
     }
 

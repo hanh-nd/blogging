@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { User } from './user.entity';
 
@@ -6,16 +6,17 @@ import { User } from './user.entity';
     name: 'user_passwords',
 })
 export class UserPassword extends BaseEntity {
-    @PrimaryGeneratedColumn({
-        name: 'user_password_id',
-    })
-    userPasswordId: number;
-
-    @Column({
+    @PrimaryColumn({
         nullable: false,
         name: 'password',
     })
     password: string;
+
+    @PrimaryColumn({
+        nullable: false,
+        name: 'user_id',
+    })
+    userId: number;
 
     @ManyToOne(() => User)
     @JoinColumn({ name: 'user_id' })

@@ -8,6 +8,8 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 };
 
 export interface ProtoGrpcType {
+  CreateUserPasswordRequest: MessageTypeDefinition
+  CreateUserPasswordResponse: MessageTypeDefinition
   CreateUserRequest: MessageTypeDefinition
   CreateUserResponse: MessageTypeDefinition
   DeleteUserRequest: MessageTypeDefinition
@@ -21,9 +23,12 @@ export interface ProtoGrpcType {
   GetUserByUserNameResponse: MessageTypeDefinition
   GetUserCountRequest: MessageTypeDefinition
   GetUserCountResponse: MessageTypeDefinition
+  GetUserPasswordByUserIdRequest: MessageTypeDefinition
+  GetUserPasswordByUserIdResponse: MessageTypeDefinition
   UpdateUserRequest: MessageTypeDefinition
   UpdateUserResponse: MessageTypeDefinition
   User: MessageTypeDefinition
+  UserPassword: MessageTypeDefinition
   UserService: SubtypeConstructor<typeof grpc.Client, _UserServiceClient> & { service: _UserServiceDefinition }
 }
 
