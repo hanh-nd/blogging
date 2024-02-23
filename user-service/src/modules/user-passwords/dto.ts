@@ -10,7 +10,7 @@ export class CreateUserPasswordRequest {
     password: string;
 }
 
-export class getUserPasswordByUserIdRequest {
+export class GetUserPasswordByUserIdRequest {
     @IsNumber()
     @IsNotEmpty()
     userId: number;

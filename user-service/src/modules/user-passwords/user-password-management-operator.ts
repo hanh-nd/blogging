@@ -1,21 +1,33 @@
 import { UserPassword } from '@src/dataaccess/db/entities';
 import { USER_PASSWORD_DATA_MAPPER_TOKEN, UserPasswordDataMapper } from '@src/dataaccess/db/mappers/user-password.dm';
+import { ItemNotFoundException } from '@src/utils/errors';
+import { validateRequest } from '@src/utils/request';
 import { injected, token } from 'brandi';
-import { CreateUserPasswordRequest } from './dto';
+import { CreateUserPasswordRequest, GetUserPasswordByUserIdRequest } from './dto';
 
 export interface UserPasswordManagementOperator {
     createUserPassword(request: CreateUserPasswordRequest): Promise<UserPassword>;
-    getUserPasswordByUserId(userId: number): Promise<UserPassword>;
+    getUserPasswordByUserId(request: GetUserPasswordByUserIdRequest): Promise<UserPassword>;
 }
 
 export class UserPasswordManagementOperatorImpl implements UserPasswordManagementOperator {
     constructor(private readonly userPasswordDataMapper: UserPasswordDataMapper) {}
 
-    createUserPassword(request: CreateUserPasswordRequest): Promise<UserPassword> {
-        throw new Error('Method not implemented.');
+    async createUserPassword(request: CreateUserPasswordRequest): Promise<UserPassword> {
+        await validateRequest<CreateUserPasswordRequest>(request, CreateUserPasswordRequest);
+
+        const newUserPassword = this.userPasswordDataMapper.from(request);
+        return this.userPasswordDataMapper.createUserPassword(newUserPassword);
     }
-    getUserPasswordByUserId(userId: number): Promise<UserPassword> {
-        throw new Error('Method not implemented.');
+
+    async getUserPasswordByUserId(request: GetUserPasswordByUserIdRequest): Promise<UserPassword> {
+        await validateRequest<GetUserPasswordByUserIdRequest>(request, GetUserPasswordByUserIdRequest);
+        const { userId } = request;
+
+        const userPassword = await this.userPasswordDataMapper.getUserPasswordByUserId(userId);
+        if (!userPassword) throw new ItemNotFoundException('This user does not have a password');
+
+        return userPassword;
     }
 }
 
