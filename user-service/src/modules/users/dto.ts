@@ -1,10 +1,11 @@
 import { AuthProvider } from '@src/constants';
-import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateUserRequest {
     @IsNotEmpty()
     userName: string;
 
+    @IsOptional()
     displayName?: string;
 
     @IsNotEmpty()
@@ -12,10 +13,15 @@ export class CreateUserRequest {
     email: string;
 
     @IsNotEmpty()
+    @IsEnum(AuthProvider)
     provider: AuthProvider;
 }
 
 export class UpdateUserRequest {
+    @IsNumber()
+    @IsNotEmpty()
+    userId: number;
+
     displayName?: string;
 
     @IsEmail()
