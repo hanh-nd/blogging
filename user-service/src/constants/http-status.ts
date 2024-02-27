@@ -47,4 +47,5 @@ export const GRPCHttpStatusMap = new BiDirectionalMap<status, HttpStatus>([
     [status.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED],
     [status.INVALID_ARGUMENT, HttpStatus.UNPROCESSABLE_ENTITY],
     [status.PERMISSION_DENIED, HttpStatus.FORBIDDEN],
+    [status.NOT_FOUND, HttpStatus.ITEM_NOT_FOUND],
 ]);

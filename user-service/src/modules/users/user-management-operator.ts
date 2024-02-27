@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_VALUE } from '@src/constants';
 import { User } from '@src/dataaccess/db/entities';
 import { USER_DATA_MAPPER_TOKEN, UserDataMapper } from '@src/dataaccess/db/mappers/user.dm';
 import { ItemExistedException, ItemNotFoundException } from '@src/utils/errors';
@@ -103,7 +104,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
 
     async getListUser(request: GetListUserRequest): Promise<User[]> {
         await validateRequest<GetListUserRequest>(request, GetListUserRequest);
-        const { page, limit, options } = request;
+        const { page = DEFAULT_PAGE_VALUE, limit = DEFAULT_PAGE_SIZE, options } = request;
 
         const where = this.buildGetListUserQuery(options);
         const users = await this.userDataMapper.getListUser(where, {

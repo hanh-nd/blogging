@@ -13,7 +13,9 @@ import {
     GetUserCountRequest,
     UpdateUserRequest,
 } from '@src/modules/users/dto';
+import { LOGGER_TOKEN } from '@src/utils/logging';
 import { injected, token } from 'brandi';
+import { Logger } from 'winston';
 import { USER_MANAGEMENT_OPERATOR_TOKEN, UserManagementOperator } from '../../modules/users/user-management-operator';
 import { UserServiceHandlers } from '../../proto/gen/UserService';
 import { ErrorWithStatus } from '../../utils/errors';
@@ -21,6 +23,7 @@ import { HttpStatusConverter } from '../../utils/http-status';
 
 export class UserServiceHandlersFactory {
     constructor(
+        private logger: Logger,
         private readonly userManagementOperator: UserManagementOperator,
         private readonly userPasswordManagementOperator: UserPasswordManagementOperator,
     ) {}
@@ -108,16 +111,17 @@ export class UserServiceHandlersFactory {
         };
     }
 
-    private handleError(e: unknown, callback: sendUnaryData<any>) {
-        if (e instanceof ErrorWithStatus) {
-            const status = HttpStatusConverter.toGRPCStatus(e.status);
+    private handleError(error: unknown, callback: sendUnaryData<any>) {
+        this.logger.error(error);
+        if (error instanceof ErrorWithStatus) {
+            const status = HttpStatusConverter.toGRPCStatus(error.status);
             return callback({
-                message: e.message,
+                message: error.message,
                 code: status,
             });
-        } else if (e instanceof Error) {
+        } else if (error instanceof Error) {
             return callback({
-                message: e.message,
+                message: error.message,
                 code: status.INTERNAL,
             });
         } else {
@@ -128,6 +132,11 @@ export class UserServiceHandlersFactory {
     }
 }
 
-injected(UserServiceHandlersFactory, USER_MANAGEMENT_OPERATOR_TOKEN, USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN);
+injected(
+    UserServiceHandlersFactory,
+    LOGGER_TOKEN,
+    USER_MANAGEMENT_OPERATOR_TOKEN,
+    USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN,
+);
 
 export const USER_SERVICE_HANDLERS_FACTORY_TOKEN = token<UserServiceHandlersFactory>('UserServiceHandlersFactory');

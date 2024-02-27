@@ -1,4 +1,4 @@
-import { IsAlphanumeric, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsAlphanumeric, IsNotEmpty, IsNumber, MinLength } from 'class-validator';
 
 export class CreateUserPasswordRequest {
     @IsNumber()
@@ -7,6 +7,7 @@ export class CreateUserPasswordRequest {
 
     @IsNotEmpty()
     @IsAlphanumeric()
+    @MinLength(6)
     password: string;
 }
 

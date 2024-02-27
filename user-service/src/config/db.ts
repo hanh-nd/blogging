@@ -23,7 +23,7 @@ export class MySQLDatabaseConfig {
             password: process.env.MY_SQL_PASSWORD || 'password',
             database: process.env.MY_SQL_DATABASE || 'ms_admin',
             logging: process.env.MY_SQL_LOGGING === 'true',
-            entities: ['dist/**/*.entity.js'],
+            entities: ['dist/**/*.entity.ts', 'src/**/*.entity.ts'],
             synchronize: process.env.MY_SQL_SYNCHRONIZE === 'true',
         } as DataSourceOptions as MySQLDatabaseConfig;
     }

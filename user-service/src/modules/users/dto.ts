@@ -22,9 +22,11 @@ export class UpdateUserRequest {
     @IsNotEmpty()
     userId: number;
 
+    @IsOptional()
     displayName?: string;
 
     @IsEmail()
+    @IsOptional()
     email?: string;
 }
 
@@ -44,19 +46,24 @@ export class GetUserByUserNameRequest {
 }
 
 export class GetListUserOptions {
+    @IsOptional()
     keyword?: string;
 }
 
 export class GetListUserRequest {
     @IsNumber()
-    page: number;
+    @IsOptional()
+    page?: number;
 
     @IsNumber()
-    limit: number;
+    @IsOptional()
+    limit?: number;
 
+    @IsOptional()
     options?: GetListUserOptions;
 }
 
 export class GetUserCountRequest {
+    @IsOptional()
     options?: GetListUserOptions;
 }

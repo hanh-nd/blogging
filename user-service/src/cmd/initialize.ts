@@ -5,7 +5,6 @@ import * as cache from '../dataaccess/cache';
 import * as db from '../dataaccess/db';
 import * as kafka from '../dataaccess/kafka';
 import * as jobs from '../jobs';
-
 import * as userManagement from '../modules/users';
 import * as utils from '../utils';
 
