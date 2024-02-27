@@ -98,9 +98,7 @@ export class UserDataMapperImpl implements UserDataMapper {
 
     getUserCount(where: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<number> {
         try {
-            return this.dataSource.getRepository(User).count({
-                where: where,
-            });
+            return this.dataSource.getRepository(User).countBy(where);
         } catch (error) {
             this.logger.error(`Failed to count users, ${(error as Error).message}`, where);
             throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);

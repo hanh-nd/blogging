@@ -26,5 +26,5 @@ export async function startGRPCServer(envPath?: string): Promise<void> {
     utils.bindToContainer(container);
 
     const server = container.get(AUTH_SERVICE_GRPC_SERVER_TOKEN);
-    server.loadProtoAndStart('src/proto/service/user_service.proto');
+    server.loadProtoAndStart('src/proto/service/auth_service.proto');
 }

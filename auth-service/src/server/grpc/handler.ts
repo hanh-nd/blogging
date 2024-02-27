@@ -13,22 +13,22 @@ import {
     GetUserCountRequest,
     UpdateUserRequest,
 } from '@src/modules/users/dto';
+import { AuthServiceHandlers } from '@src/proto/gen/AuthService';
 import { LOGGER_TOKEN } from '@src/utils/logging';
 import { injected, token } from 'brandi';
 import { Logger } from 'winston';
 import { USER_MANAGEMENT_OPERATOR_TOKEN, UserManagementOperator } from '../../modules/users/user-management-operator';
-import { UserServiceHandlers } from '../../proto/gen/UserService';
 import { ErrorWithStatus } from '../../utils/errors';
 import { HttpStatusConverter } from '../../utils/http-status';
 
-export class UserServiceHandlersFactory {
+export class AuthServiceHandlersFactory {
     constructor(
         private logger: Logger,
         private readonly userManagementOperator: UserManagementOperator,
         private readonly userPasswordManagementOperator: UserPasswordManagementOperator,
     ) {}
 
-    public getHandlers(): UserServiceHandlers {
+    public getHandlers(): AuthServiceHandlers {
         return {
             CreateUser: async ({ request }, callback) => {
                 try {
@@ -133,10 +133,10 @@ export class UserServiceHandlersFactory {
 }
 
 injected(
-    UserServiceHandlersFactory,
+    AuthServiceHandlersFactory,
     LOGGER_TOKEN,
     USER_MANAGEMENT_OPERATOR_TOKEN,
     USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN,
 );
 
-export const USER_SERVICE_HANDLERS_FACTORY_TOKEN = token<UserServiceHandlersFactory>('UserServiceHandlersFactory');
+export const AUTH_SERVICE_HANDLERS_FACTORY_TOKEN = token<AuthServiceHandlersFactory>('AuthServiceHandlersFactory');

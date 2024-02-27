@@ -1,4 +1,4 @@
-import { AuthProvider } from '@src/constants';
+import { AuthProvider, BaseGetListOptions, BaseGetListRequest } from '@src/constants';
 import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateUserRequest {
@@ -45,20 +45,9 @@ export class GetUserByUserNameRequest {
     userName: string;
 }
 
-export class GetListUserOptions {
-    @IsOptional()
-    keyword?: string;
-}
+export class GetListUserOptions extends BaseGetListOptions {}
 
-export class GetListUserRequest {
-    @IsNumber()
-    @IsOptional()
-    page?: number;
-
-    @IsNumber()
-    @IsOptional()
-    limit?: number;
-
+export class GetListUserRequest extends BaseGetListRequest {
     @IsOptional()
     options?: GetListUserOptions;
 }

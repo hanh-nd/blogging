@@ -1,15 +1,15 @@
 import { Server, ServerCredentials, loadPackageDefinition } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
+import { ProtoGrpcType } from '@src/proto/gen/auth_service';
 import { injected, token } from 'brandi';
 import { Logger } from 'winston';
 import { GRPCServerConfig, GRPC_SERVER_CONFIG_TOKEN } from '../../config/grpc-server';
-import { ProtoGrpcType } from '../../proto/gen/user_service';
 import { LOGGER_TOKEN } from '../../utils/logging';
-import { USER_SERVICE_HANDLERS_FACTORY_TOKEN, UserServiceHandlersFactory } from './handler';
+import { AUTH_SERVICE_HANDLERS_FACTORY_TOKEN, AuthServiceHandlersFactory } from './handler';
 
-export class UserServiceGRPCServer {
+export class AuthServiceGRPCServer {
     constructor(
-        private readonly handlerFactory: UserServiceHandlersFactory,
+        private readonly handlerFactory: AuthServiceHandlersFactory,
         private readonly gRPCServerConfig: GRPCServerConfig,
         private readonly logger: Logger,
     ) {}
@@ -17,7 +17,7 @@ export class UserServiceGRPCServer {
     public loadProtoAndStart(path: string): void {
         const protoGRPC = this.loadProtoGRPC(path);
         const server = new Server();
-        server.addService(protoGRPC.UserService.service, this.handlerFactory.getHandlers());
+        server.addService(protoGRPC.AuthService.service, this.handlerFactory.getHandlers());
         server.bindAsync(`0.0.0.0:${this.gRPCServerConfig.port}`, ServerCredentials.createInsecure(), (error, port) => {
             if (error) {
                 this.logger.error('Failed to start gRPC server', error);
@@ -41,6 +41,6 @@ export class UserServiceGRPCServer {
     }
 }
 
-injected(UserServiceGRPCServer, USER_SERVICE_HANDLERS_FACTORY_TOKEN, GRPC_SERVER_CONFIG_TOKEN, LOGGER_TOKEN);
+injected(AuthServiceGRPCServer, AUTH_SERVICE_HANDLERS_FACTORY_TOKEN, GRPC_SERVER_CONFIG_TOKEN, LOGGER_TOKEN);
 
-export const AUTH_SERVICE_GRPC_SERVER_TOKEN = token<UserServiceGRPCServer>('UserServiceGRPCServer');
+export const AUTH_SERVICE_GRPC_SERVER_TOKEN = token<AuthServiceGRPCServer>('UserServiceGRPCServer');
