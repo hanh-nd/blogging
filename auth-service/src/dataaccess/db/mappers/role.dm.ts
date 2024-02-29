@@ -1,9 +1,9 @@
 import { WrapErrorStatus } from '@src/decorators/wrap-error-status.decorator';
 import { LOGGER_TOKEN } from '@src/utils/logging';
 import { injected, token } from 'brandi';
-import { DataSource, FindManyOptions, FindOptionsWhere } from 'typeorm';
+import { EntityManager, FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { Logger } from 'winston';
-import { MY_SQL_DATA_SOURCE_TOKEN } from '../client';
+import { MY_SQL_ENTITY_MANAGER_TOKEN } from '../client';
 import { Role } from '../entities';
 
 export interface RoleDataMapper {
@@ -21,23 +21,23 @@ export interface RoleDataMapper {
 
 export class RoleDataMapperImpl implements RoleDataMapper {
     constructor(
-        private readonly dataSource: DataSource,
+        private readonly entityManager: EntityManager,
         private readonly logger: Logger,
     ) {}
 
     @WrapErrorStatus()
     from(body: Partial<Role>): Role {
-        return this.dataSource.getRepository(Role).create(body);
+        return this.entityManager.getRepository(Role).create(body);
     }
 
     @WrapErrorStatus()
     createRole(body: Partial<Role>): Promise<Role> {
-        return this.dataSource.getRepository(Role).save(body);
+        return this.entityManager.getRepository(Role).save(body);
     }
 
     @WrapErrorStatus()
     async updateRole(roleId: number, body: Partial<Role>): Promise<void> {
-        await this.dataSource.getRepository(Role).update(
+        await this.entityManager.getRepository(Role).update(
             {
                 roleId: roleId,
             },
@@ -47,14 +47,14 @@ export class RoleDataMapperImpl implements RoleDataMapper {
 
     @WrapErrorStatus()
     async deleteRole(roleId: number): Promise<void> {
-        await this.dataSource.getRepository(Role).softDelete({
+        await this.entityManager.getRepository(Role).softDelete({
             roleId: roleId,
         });
     }
 
     @WrapErrorStatus()
     getRoleById(roleId: number): Promise<Role | null> {
-        return this.dataSource.getRepository(Role).findOneBy({
+        return this.entityManager.getRepository(Role).findOneBy({
             roleId: roleId,
         });
     }
@@ -64,7 +64,7 @@ export class RoleDataMapperImpl implements RoleDataMapper {
         where: FindOptionsWhere<Role> | FindOptionsWhere<Role>[],
         options: FindManyOptions<Role>,
     ): Promise<Role[]> {
-        return this.dataSource.getRepository(Role).find({
+        return this.entityManager.getRepository(Role).find({
             where: where,
             ...options,
         });
@@ -72,10 +72,10 @@ export class RoleDataMapperImpl implements RoleDataMapper {
 
     @WrapErrorStatus()
     getRoleCount(where: FindOptionsWhere<Role> | FindOptionsWhere<Role>[]): Promise<number> {
-        return this.dataSource.getRepository(Role).countBy(where);
+        return this.entityManager.getRepository(Role).countBy(where);
     }
 }
 
-injected(RoleDataMapperImpl, MY_SQL_DATA_SOURCE_TOKEN, LOGGER_TOKEN);
+injected(RoleDataMapperImpl, MY_SQL_ENTITY_MANAGER_TOKEN, LOGGER_TOKEN);
 
 export const ROLE_DATA_MAPPER_TOKEN = token<RoleDataMapper>('RoleDataMapper');

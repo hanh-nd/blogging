@@ -18,6 +18,8 @@ import type { GetUserCountRequest as _GetUserCountRequest, GetUserCountRequest__
 import type { GetUserCountResponse as _GetUserCountResponse, GetUserCountResponse__Output as _GetUserCountResponse__Output } from './GetUserCountResponse';
 import type { GetUserPasswordByUserIdRequest as _GetUserPasswordByUserIdRequest, GetUserPasswordByUserIdRequest__Output as _GetUserPasswordByUserIdRequest__Output } from './GetUserPasswordByUserIdRequest';
 import type { GetUserPasswordByUserIdResponse as _GetUserPasswordByUserIdResponse, GetUserPasswordByUserIdResponse__Output as _GetUserPasswordByUserIdResponse__Output } from './GetUserPasswordByUserIdResponse';
+import type { LoginByPasswordRequest as _LoginByPasswordRequest, LoginByPasswordRequest__Output as _LoginByPasswordRequest__Output } from './LoginByPasswordRequest';
+import type { LoginByPasswordResponse as _LoginByPasswordResponse, LoginByPasswordResponse__Output as _LoginByPasswordResponse__Output } from './LoginByPasswordResponse';
 import type { UpdateUserRequest as _UpdateUserRequest, UpdateUserRequest__Output as _UpdateUserRequest__Output } from './UpdateUserRequest';
 import type { UpdateUserResponse as _UpdateUserResponse, UpdateUserResponse__Output as _UpdateUserResponse__Output } from './UpdateUserResponse';
 
@@ -94,6 +96,15 @@ export interface AuthServiceClient extends grpc.Client {
   getUserPasswordByUserId(argument: _GetUserPasswordByUserIdRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_GetUserPasswordByUserIdResponse__Output>): grpc.ClientUnaryCall;
   getUserPasswordByUserId(argument: _GetUserPasswordByUserIdRequest, callback: grpc.requestCallback<_GetUserPasswordByUserIdResponse__Output>): grpc.ClientUnaryCall;
   
+  LoginByPassword(argument: _LoginByPasswordRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  LoginByPassword(argument: _LoginByPasswordRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  LoginByPassword(argument: _LoginByPasswordRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  LoginByPassword(argument: _LoginByPasswordRequest, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  loginByPassword(argument: _LoginByPasswordRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  loginByPassword(argument: _LoginByPasswordRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  loginByPassword(argument: _LoginByPasswordRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  loginByPassword(argument: _LoginByPasswordRequest, callback: grpc.requestCallback<_LoginByPasswordResponse__Output>): grpc.ClientUnaryCall;
+  
   UpdateUser(argument: _UpdateUserRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_UpdateUserResponse__Output>): grpc.ClientUnaryCall;
   UpdateUser(argument: _UpdateUserRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_UpdateUserResponse__Output>): grpc.ClientUnaryCall;
   UpdateUser(argument: _UpdateUserRequest, options: grpc.CallOptions, callback: grpc.requestCallback<_UpdateUserResponse__Output>): grpc.ClientUnaryCall;
@@ -122,6 +133,8 @@ export interface AuthServiceHandlers extends grpc.UntypedServiceImplementation {
   
   GetUserPasswordByUserId: grpc.handleUnaryCall<_GetUserPasswordByUserIdRequest__Output, _GetUserPasswordByUserIdResponse>;
   
+  LoginByPassword: grpc.handleUnaryCall<_LoginByPasswordRequest__Output, _LoginByPasswordResponse>;
+  
   UpdateUser: grpc.handleUnaryCall<_UpdateUserRequest__Output, _UpdateUserResponse>;
   
 }
@@ -135,5 +148,6 @@ export interface AuthServiceDefinition extends grpc.ServiceDefinition {
   GetUserByUserName: MethodDefinition<_GetUserByUserNameRequest, _GetUserByUserNameResponse, _GetUserByUserNameRequest__Output, _GetUserByUserNameResponse__Output>
   GetUserCount: MethodDefinition<_GetUserCountRequest, _GetUserCountResponse, _GetUserCountRequest__Output, _GetUserCountResponse__Output>
   GetUserPasswordByUserId: MethodDefinition<_GetUserPasswordByUserIdRequest, _GetUserPasswordByUserIdResponse, _GetUserPasswordByUserIdRequest__Output, _GetUserPasswordByUserIdResponse__Output>
+  LoginByPassword: MethodDefinition<_LoginByPasswordRequest, _LoginByPasswordResponse, _LoginByPasswordRequest__Output, _LoginByPasswordResponse__Output>
   UpdateUser: MethodDefinition<_UpdateUserRequest, _UpdateUserResponse, _UpdateUserRequest__Output, _UpdateUserResponse__Output>
 }

@@ -1,5 +1,6 @@
 import { UserPassword } from '@src/dataaccess/db/entities';
 import { USER_PASSWORD_DATA_MAPPER_TOKEN, UserPasswordDataMapper } from '@src/dataaccess/db/mappers/user-password.dm';
+import { CRYPTO_TOKEN, Crypto } from '@src/utils/crypto';
 import { ItemExistedException, ItemNotFoundException } from '@src/utils/errors';
 import { validateRequest } from '@src/utils/request';
 import { injected, token } from 'brandi';
@@ -15,6 +16,7 @@ export class UserPasswordManagementOperatorImpl implements UserPasswordManagemen
     constructor(
         private readonly userPasswordDataMapper: UserPasswordDataMapper,
         private readonly userDataMapper: UserDataMapper,
+        private readonly crypto: Crypto,
     ) {}
 
     async createUserPassword(request: CreateUserPasswordRequest): Promise<UserPassword> {
@@ -24,13 +26,22 @@ export class UserPasswordManagementOperatorImpl implements UserPasswordManagemen
         const user = await this.userDataMapper.getUserById(userId);
         if (!user) throw new ItemNotFoundException('User not found');
 
-        const userExistedPasswords = await this.userPasswordDataMapper.getUserPasswordsLock(userId);
-        if (userExistedPasswords.length && userExistedPasswords.find((up) => up.password === request.password)) {
-            throw new ItemExistedException('You already have this password');
-        }
+        return this.userPasswordDataMapper.withTransaction(async (dataManager) => {
+            const userExistedPasswords = await dataManager.getUserPasswordsLock(userId);
+            if (userExistedPasswords.length) {
+                for (const userPassword of userExistedPasswords) {
+                    if (await this.crypto.comparePassword(request.password, userPassword.password)) {
+                        throw new ItemExistedException('You already have this password');
+                    }
+                }
+            }
 
-        const newUserPassword = this.userPasswordDataMapper.from(request);
-        return this.userPasswordDataMapper.createUserPassword(newUserPassword);
+            const newUserPassword = dataManager.from({
+                ...request,
+                password: await this.crypto.hashPassword(request.password),
+            });
+            return dataManager.createUserPasswordLock(newUserPassword);
+        });
     }
 
     async getUserPasswordByUserId(request: GetUserPasswordByUserIdRequest): Promise<UserPassword> {
@@ -44,7 +55,7 @@ export class UserPasswordManagementOperatorImpl implements UserPasswordManagemen
     }
 }
 
-injected(UserPasswordManagementOperatorImpl, USER_PASSWORD_DATA_MAPPER_TOKEN, USER_DATA_MAPPER_TOKEN);
+injected(UserPasswordManagementOperatorImpl, USER_PASSWORD_DATA_MAPPER_TOKEN, USER_DATA_MAPPER_TOKEN, CRYPTO_TOKEN);
 
 export const USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN = token<UserPasswordManagementOperator>(
     'UserPasswordManagementOperator',

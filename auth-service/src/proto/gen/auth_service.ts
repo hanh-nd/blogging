@@ -26,6 +26,9 @@ export interface ProtoGrpcType {
   GetUserCountResponse: MessageTypeDefinition
   GetUserPasswordByUserIdRequest: MessageTypeDefinition
   GetUserPasswordByUserIdResponse: MessageTypeDefinition
+  LoginByPasswordRequest: MessageTypeDefinition
+  LoginByPasswordResponse: MessageTypeDefinition
+  Token: MessageTypeDefinition
   UpdateUserRequest: MessageTypeDefinition
   UpdateUserResponse: MessageTypeDefinition
   User: MessageTypeDefinition

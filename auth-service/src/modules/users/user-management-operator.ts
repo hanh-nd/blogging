@@ -1,11 +1,14 @@
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_VALUE } from '@src/constants';
 import { User } from '@src/dataaccess/db/entities';
+import { USER_PASSWORD_DATA_MAPPER_TOKEN, UserPasswordDataMapper } from '@src/dataaccess/db/mappers/user-password.dm';
 import { USER_DATA_MAPPER_TOKEN, UserDataMapper } from '@src/dataaccess/db/mappers/user.dm';
-import { ItemExistedException, ItemNotFoundException } from '@src/utils/errors';
+import { CRYPTO_TOKEN, Crypto } from '@src/utils/crypto';
+import { ItemExistedException, ItemNotFoundException, UnAuthorizedException } from '@src/utils/errors';
 import { validateRequest } from '@src/utils/request';
 import { injected, token } from 'brandi';
 import { FindOptionsWhere, Like } from 'typeorm';
 import {
+    AuthResponse,
     CreateUserRequest,
     DeleteUserRequest,
     GetListUserOptions,
@@ -13,6 +16,7 @@ import {
     GetUserByIdRequest,
     GetUserByUserNameRequest,
     GetUserCountRequest,
+    LoginByPasswordRequest,
     UpdateUserRequest,
 } from './dto';
 
@@ -24,10 +28,15 @@ export interface UserManagementOperator {
     getUserByUserName(request: GetUserByUserNameRequest): Promise<User>;
     getListUser(request: GetListUserRequest): Promise<User[]>;
     getUserCount(request: GetUserCountRequest): Promise<number>;
+    loginByPassword(request: LoginByPasswordRequest): Promise<AuthResponse>;
 }
 
 export class UserManagementOperatorImpl implements UserManagementOperator {
-    constructor(private readonly userDataMapper: UserDataMapper) {}
+    constructor(
+        private readonly userDataMapper: UserDataMapper,
+        private readonly userPasswordDataMapper: UserPasswordDataMapper,
+        private readonly crypto: Crypto,
+    ) {}
 
     async createUser(request: CreateUserRequest): Promise<User> {
         await validateRequest<CreateUserRequest>(request, CreateUserRequest);
@@ -133,8 +142,28 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
 
         return query;
     }
+
+    async loginByPassword(request: LoginByPasswordRequest): Promise<AuthResponse> {
+        await validateRequest<LoginByPasswordRequest>(request, LoginByPasswordRequest);
+        const { userName, password } = request;
+
+        const user = await this.userDataMapper.getUserBy({ userName });
+        if (!user) throw new ItemNotFoundException('User not found');
+
+        const userPassword = await this.userPasswordDataMapper.getUserPasswordByUserId(user.userId);
+        if (!userPassword) throw new ItemNotFoundException('You have not set password yet');
+
+        const isCorrectPassword = await this.crypto.comparePassword(password, userPassword.password);
+        if (!isCorrectPassword) throw new UnAuthorizedException('Invalid credentials');
+
+        // TODO: create access token
+        return {
+            accessToken: 'access-token',
+            refreshToken: 'refresh-token',
+        };
+    }
 }
 
-injected(UserManagementOperatorImpl, USER_DATA_MAPPER_TOKEN);
+injected(UserManagementOperatorImpl, USER_DATA_MAPPER_TOKEN, USER_PASSWORD_DATA_MAPPER_TOKEN, CRYPTO_TOKEN);
 
 export const USER_MANAGEMENT_OPERATOR_TOKEN = token<UserManagementOperator>('UserManagementOperator');

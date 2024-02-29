@@ -41,7 +41,7 @@ export class ForbiddenException extends ErrorWithStatus {
     }
 }
 
-export class UnuserorizedException extends ErrorWithStatus {
+export class UnAuthorizedException extends ErrorWithStatus {
     constructor(message = HttpStatusMessage[HttpStatus.UNAUTHORIZED]) {
         super(message, HttpStatus.UNAUTHORIZED);
     }

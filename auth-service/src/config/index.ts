@@ -1,5 +1,6 @@
 import { Container } from 'brandi';
 import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from './config';
+import { CRYPTO_CONFIG_TOKEN } from './crypto';
 import { MY_SQL_DATABASE_CONFIG_TOKEN } from './db';
 import { GRPC_SERVER_CONFIG_TOKEN } from './grpc-server';
 import { HTTP_SERVER_CONFIG_TOKEN } from './http-server';
@@ -27,5 +28,9 @@ export function bindToContainer(container: Container) {
     container
         .bind(HTTP_SERVER_CONFIG_TOKEN)
         .toInstance(() => container.get(APPLICATION_CONFIG_TOKEN).httpServerConfig)
+        .inSingletonScope();
+    container
+        .bind(CRYPTO_CONFIG_TOKEN)
+        .toInstance(() => container.get(APPLICATION_CONFIG_TOKEN).cryptoConfig)
         .inSingletonScope();
 }

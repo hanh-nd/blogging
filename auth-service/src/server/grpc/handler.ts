@@ -11,6 +11,7 @@ import {
     GetUserByIdRequest,
     GetUserByUserNameRequest,
     GetUserCountRequest,
+    LoginByPasswordRequest,
     UpdateUserRequest,
 } from '@src/modules/users/dto';
 import { AuthServiceHandlers } from '@src/proto/gen/AuthService';
@@ -104,6 +105,16 @@ export class AuthServiceHandlersFactory {
                         request as GetUserPasswordByUserIdRequest,
                     );
                     return callback(null, { userPassword: userPassword });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            LoginByPassword: async ({ request }, callback) => {
+                try {
+                    const authResponse = await this.userManagementOperator.loginByPassword(
+                        request as LoginByPasswordRequest,
+                    );
+                    return callback(null, { token: authResponse });
                 } catch (error) {
                     return this.handleError(error, callback);
                 }

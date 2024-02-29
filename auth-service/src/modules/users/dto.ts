@@ -56,3 +56,16 @@ export class GetUserCountRequest {
     @IsOptional()
     options?: GetListUserOptions;
 }
+
+export class LoginByPasswordRequest {
+    @IsNotEmpty()
+    userName: string;
+
+    @IsNotEmpty()
+    password: string;
+}
+
+export type AuthResponse = {
+    accessToken: string;
+    refreshToken: string;
+};
