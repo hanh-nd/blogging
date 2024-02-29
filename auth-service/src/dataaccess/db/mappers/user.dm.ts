@@ -1,5 +1,4 @@
-import { HttpStatus } from '@src/constants';
-import { ErrorWithStatus } from '@src/utils/errors';
+import { WrapErrorStatus } from '@src/decorators/wrap-error-status.decorator';
 import { LOGGER_TOKEN } from '@src/utils/logging';
 import { injected, token } from 'brandi';
 import { DataSource, FindManyOptions, FindOptionsWhere } from 'typeorm';
@@ -27,82 +26,55 @@ export class UserDataMapperImpl implements UserDataMapper {
         private readonly logger: Logger,
     ) {}
 
+    @WrapErrorStatus()
     from(body: Partial<User>): User {
         return this.dataSource.getRepository(User).create(body);
     }
 
+    @WrapErrorStatus()
     createUser(body: User): Promise<User> {
-        try {
-            return this.dataSource.getRepository(User).save(body);
-        } catch (error) {
-            this.logger.error(`Failed to update user, ${(error as Error).message}`, body);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(User).save(body);
     }
 
+    @WrapErrorStatus()
     async updateUser(userId: number, body: Partial<User>): Promise<void> {
-        try {
-            await this.dataSource.getRepository(User).update(
-                {
-                    userId: userId,
-                },
-                body,
-            );
-        } catch (error) {
-            this.logger.error(`Failed to update user, ${(error as Error).message}`, userId, body);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        await this.dataSource.getRepository(User).update(
+            {
+                userId: userId,
+            },
+            body,
+        );
     }
 
+    @WrapErrorStatus()
     async deleteUser(userId: number): Promise<void> {
-        try {
-            await this.dataSource.getRepository(User).softDelete({ userId: userId });
-        } catch (error) {
-            this.logger.error(`Failed to delete user, ${(error as Error).message}`, userId);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        await this.dataSource.getRepository(User).softDelete({ userId: userId });
     }
 
+    @WrapErrorStatus()
     async getUserById(userId: number): Promise<User | null> {
-        try {
-            return this.dataSource.getRepository(User).findOneBy({ userId: userId });
-        } catch (error) {
-            this.logger.error(`Failed to get user by id, ${(error as Error).message}`, userId);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(User).findOneBy({ userId: userId });
     }
 
+    @WrapErrorStatus()
     async getUserBy(where: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<User | null> {
-        try {
-            return this.dataSource.getRepository(User).findOneBy(where);
-        } catch (error) {
-            this.logger.error(`Failed to get user by, ${(error as Error).message}`, where);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(User).findOneBy(where);
     }
 
+    @WrapErrorStatus()
     getListUser(
         where: FindOptionsWhere<User> | FindOptionsWhere<User>[],
         options: FindManyOptions<User>,
     ): Promise<User[]> {
-        try {
-            return this.dataSource.getRepository(User).find({
-                where: where,
-                ...options,
-            });
-        } catch (error) {
-            this.logger.error(`Failed to get list user, ${(error as Error).message}`, where, options);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(User).find({
+            where: where,
+            ...options,
+        });
     }
 
+    @WrapErrorStatus()
     getUserCount(where: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<number> {
-        try {
-            return this.dataSource.getRepository(User).countBy(where);
-        } catch (error) {
-            this.logger.error(`Failed to count users, ${(error as Error).message}`, where);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(User).countBy(where);
     }
 }
 

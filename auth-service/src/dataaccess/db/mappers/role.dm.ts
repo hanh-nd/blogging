@@ -1,5 +1,4 @@
-import { HttpStatus } from '@src/constants';
-import { ErrorWithStatus } from '@src/utils/errors';
+import { WrapErrorStatus } from '@src/decorators/wrap-error-status.decorator';
 import { LOGGER_TOKEN } from '@src/utils/logging';
 import { injected, token } from 'brandi';
 import { DataSource, FindManyOptions, FindOptionsWhere } from 'typeorm';
@@ -26,77 +25,54 @@ export class RoleDataMapperImpl implements RoleDataMapper {
         private readonly logger: Logger,
     ) {}
 
+    @WrapErrorStatus()
     from(body: Partial<Role>): Role {
         return this.dataSource.getRepository(Role).create(body);
     }
 
+    @WrapErrorStatus()
     createRole(body: Partial<Role>): Promise<Role> {
-        try {
-            return this.dataSource.getRepository(Role).save(body);
-        } catch (error) {
-            this.logger.error(`Failed to create role, ${(error as Error).message}`, body);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(Role).save(body);
     }
 
+    @WrapErrorStatus()
     async updateRole(roleId: number, body: Partial<Role>): Promise<void> {
-        try {
-            await this.dataSource.getRepository(Role).update(
-                {
-                    roleId: roleId,
-                },
-                body,
-            );
-        } catch (error) {
-            this.logger.error(`Failed to update role, ${(error as Error).message}`, roleId, body);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        await this.dataSource.getRepository(Role).update(
+            {
+                roleId: roleId,
+            },
+            body,
+        );
     }
 
+    @WrapErrorStatus()
     async deleteRole(roleId: number): Promise<void> {
-        try {
-            await this.dataSource.getRepository(Role).softDelete({
-                roleId: roleId,
-            });
-        } catch (error) {
-            this.logger.error(`Failed to delete role, ${(error as Error).message}`, roleId);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        await this.dataSource.getRepository(Role).softDelete({
+            roleId: roleId,
+        });
     }
 
+    @WrapErrorStatus()
     getRoleById(roleId: number): Promise<Role | null> {
-        try {
-            return this.dataSource.getRepository(Role).findOneBy({
-                roleId: roleId,
-            });
-        } catch (error) {
-            this.logger.error(`Failed to get role by id, ${(error as Error).message}`, roleId);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(Role).findOneBy({
+            roleId: roleId,
+        });
     }
 
+    @WrapErrorStatus()
     getListRole(
         where: FindOptionsWhere<Role> | FindOptionsWhere<Role>[],
         options: FindManyOptions<Role>,
     ): Promise<Role[]> {
-        try {
-            return this.dataSource.getRepository(Role).find({
-                where: where,
-                ...options,
-            });
-        } catch (error) {
-            this.logger.error(`Failed to get list role, ${(error as Error).message}`, where, options);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(Role).find({
+            where: where,
+            ...options,
+        });
     }
 
+    @WrapErrorStatus()
     getRoleCount(where: FindOptionsWhere<Role> | FindOptionsWhere<Role>[]): Promise<number> {
-        try {
-            return this.dataSource.getRepository(Role).countBy(where);
-        } catch (error) {
-            this.logger.error(`Failed to get role count, ${(error as Error).message}`, where);
-            throw ErrorWithStatus.wrapWithStatus(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return this.dataSource.getRepository(Role).countBy(where);
     }
 }
 
