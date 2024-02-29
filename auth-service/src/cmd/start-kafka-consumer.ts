@@ -6,7 +6,7 @@ import * as db from '../dataaccess/db';
 import * as kafka from '../dataaccess/kafka';
 import { KAFKA_EVENT_CONSUMER_MANAGER_TOKEN } from '../dataaccess/kafka/consumer/events/event-consumer-manager';
 import * as jobs from '../jobs';
-import * as userManagement from '../modules/users';
+import * as modules from '../modules';
 import * as utils from '../utils';
 
 export async function startKafkaConsumer(envPath?: string): Promise<void> {
@@ -20,7 +20,7 @@ export async function startKafkaConsumer(envPath?: string): Promise<void> {
     await db.bindToContainer(container);
     await kafka.bindToContainer(container);
     jobs.bindToContainer(container);
-    userManagement.bindToContainer(container);
+    modules.bindToContainer(container);
     utils.bindToContainer(container);
 
     // do initializations

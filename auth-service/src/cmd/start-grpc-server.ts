@@ -5,7 +5,7 @@ import * as cache from '../dataaccess/cache';
 import * as db from '../dataaccess/db';
 import * as kafka from '../dataaccess/kafka';
 import * as jobs from '../jobs';
-import * as userManagement from '../modules/users';
+import * as modules from '../modules';
 import * as gRPCService from '../server/grpc';
 import { AUTH_SERVICE_GRPC_SERVER_TOKEN } from '../server/grpc/server';
 import * as utils from '../utils';
@@ -21,7 +21,7 @@ export async function startGRPCServer(envPath?: string): Promise<void> {
     await db.bindToContainer(container);
     await kafka.bindToContainer(container);
     jobs.bindToContainer(container);
-    userManagement.bindToContainer(container);
+    modules.bindToContainer(container);
     gRPCService.bindToContainer(container);
     utils.bindToContainer(container);
 

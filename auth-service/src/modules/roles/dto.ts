@@ -25,6 +25,11 @@ export class GetRoleByIdRequest {
     roleId: number;
 }
 
+export class GetRoleByIdsRequest {
+    @IsNumber({}, { each: true })
+    roleIds: number[];
+}
+
 export class GetListRoleOptions extends BaseGetListOptions {}
 
 export class GetListRoleRequest extends BaseGetListRequest {
@@ -43,9 +48,4 @@ export class UpdateUserRolesRequest {
 
     @IsNumber({}, { each: true })
     roleIds: number[];
-}
-
-export class GetUserRolesRequest {
-    @IsNumber()
-    userId: number;
 }

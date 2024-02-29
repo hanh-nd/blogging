@@ -69,3 +69,8 @@ export type AuthResponse = {
     accessToken: string;
     refreshToken: string;
 };
+
+export class GetUserRolesRequest {
+    @IsNumber()
+    userId: number;
+}

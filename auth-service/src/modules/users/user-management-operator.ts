@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_VALUE } from '@src/constants';
-import { User } from '@src/dataaccess/db/entities';
+import { Role, User } from '@src/dataaccess/db/entities';
 import { USER_PASSWORD_DATA_MAPPER_TOKEN, UserPasswordDataMapper } from '@src/dataaccess/db/mappers/user-password.dm';
 import { USER_DATA_MAPPER_TOKEN, UserDataMapper } from '@src/dataaccess/db/mappers/user.dm';
 import { CRYPTO_TOKEN, Crypto } from '@src/utils/crypto';
@@ -16,6 +16,7 @@ import {
     GetUserByIdRequest,
     GetUserByUserNameRequest,
     GetUserCountRequest,
+    GetUserRolesRequest,
     LoginByPasswordRequest,
     UpdateUserRequest,
 } from './dto';
@@ -29,6 +30,7 @@ export interface UserManagementOperator {
     getListUser(request: GetListUserRequest): Promise<User[]>;
     getUserCount(request: GetUserCountRequest): Promise<number>;
     loginByPassword(request: LoginByPasswordRequest): Promise<AuthResponse>;
+    getUserRoles(request: GetUserRolesRequest): Promise<Role[]>;
 }
 
 export class UserManagementOperatorImpl implements UserManagementOperator {
@@ -161,6 +163,19 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
             accessToken: 'access-token',
             refreshToken: 'refresh-token',
         };
+    }
+
+    async getUserRoles(request: GetUserRolesRequest): Promise<Role[]> {
+        await validateRequest<GetUserRolesRequest>(request, GetUserRolesRequest);
+        const { userId } = request;
+
+        const user = await this.userDataMapper.getUserById(userId, {
+            relations: {
+                roles: true,
+            },
+        });
+        if (!user) throw new ItemNotFoundException('User not found');
+        return user.roles;
     }
 }
 

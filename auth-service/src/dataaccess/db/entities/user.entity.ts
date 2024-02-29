@@ -51,5 +51,5 @@ export class User extends BaseEntity {
             referencedColumnName: 'roleId',
         },
     })
-    users: User[];
+    roles: Role[];
 }

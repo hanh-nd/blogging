@@ -5,7 +5,7 @@ import * as cache from '../dataaccess/cache';
 import * as db from '../dataaccess/db';
 import * as kafka from '../dataaccess/kafka';
 import * as jobs from '../jobs';
-import * as userManagement from '../modules/users';
+import * as modules from '../modules';
 import * as utils from '../utils';
 
 export async function initialize(envPath?: string): Promise<void> {
@@ -19,7 +19,7 @@ export async function initialize(envPath?: string): Promise<void> {
     await db.bindToContainer(container);
     await kafka.bindToContainer(container);
     jobs.bindToContainer(container);
-    userManagement.bindToContainer(container);
+    modules.bindToContainer(container);
     utils.bindToContainer(container);
 
     // do initializations

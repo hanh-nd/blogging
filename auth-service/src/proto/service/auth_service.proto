@@ -11,6 +11,14 @@ service AuthService {
     rpc CreateUserPassword(CreateUserPasswordRequest) returns (CreateUserPasswordResponse) {}
     rpc GetUserPasswordByUserId(GetUserPasswordByUserIdRequest) returns (GetUserPasswordByUserIdResponse) {}
     rpc LoginByPassword(LoginByPasswordRequest) returns (LoginByPasswordResponse) {}
+    rpc GetUserRoles(GetUserRolesRequest) returns (GetUserRolesResponse) {}
+    rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {}
+    rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse) {}
+    rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {}
+    rpc GetRoleById(GetRoleByIdRequest) returns (GetRoleByIdResponse) {}
+    rpc GetListRole(GetListRoleRequest) returns (GetListRoleResponse) {}
+    rpc GetRoleCount(GetRoleCountRequest) returns (GetRoleCountResponse) {}
+    rpc UpdateUserRoles(UpdateUserRolesRequest) returns (UpdateUserRolesResponse) {}
 }
 
 // Bussiness logic
@@ -31,7 +39,14 @@ message Token {
     string refresh_token = 2;
 }
 
+message Role {
+    int32 role_id = 1;
+    string name = 2;
+}
+
 // Request - Response
+message Empty {}
+
 message CreateUserRequest {
     string user_name = 1;
     optional string display_name = 2;
@@ -123,4 +138,77 @@ message LoginByPasswordRequest {
 
 message LoginByPasswordResponse {
     Token token = 1;
+}
+
+message GetUserRolesRequest {
+    int32 user_id = 1;
+}
+
+message GetUserRolesResponse {
+    repeated Role roles = 1;
+}
+
+message CreateRoleRequest {
+    string name = 1;
+}
+
+message CreateRoleResponse {
+    Role role = 1;
+}
+
+message UpdateRoleRequest {
+    int32 role_id = 1;
+    string name = 2;
+}
+
+message UpdateRoleResponse {
+    Role role = 1;
+}
+
+message DeleteRoleRequest {
+    int32 role_id = 1;
+}
+
+message DeleteRoleResponse {
+    bool deleted = 1;
+}
+
+message GetRoleByIdRequest {
+    int32 role_id = 1;
+}
+
+message GetRoleByIdResponse {
+    Role role = 1;
+}
+
+
+message GetListRoleOptions {
+    optional string keyword = 1;
+}
+
+message GetListRoleRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    optional GetListRoleOptions options = 3;
+}
+
+message GetListRoleResponse {
+    repeated Role roles = 1;
+}
+
+message GetRoleCountRequest {
+    optional GetListRoleOptions options = 1;
+}
+
+message GetRoleCountResponse {
+    int32 count = 1;
+}
+
+message UpdateUserRolesRequest {
+    int32 user_id = 1;
+    repeated int32 role_ids = 2;
+}
+
+message UpdateUserRolesResponse {
+    bool updated = 1;
 }

@@ -1,7 +1,7 @@
 import { WrapErrorStatus } from '@src/decorators/wrap-error-status.decorator';
 import { LOGGER_TOKEN } from '@src/utils/logging';
 import { injected, token } from 'brandi';
-import { EntityManager, FindManyOptions, FindOptionsWhere } from 'typeorm';
+import { EntityManager, FindManyOptions, FindOneOptions, FindOptionsWhere } from 'typeorm';
 import { Logger } from 'winston';
 import { MY_SQL_ENTITY_MANAGER_TOKEN } from '../client';
 import { User } from '../entities';
@@ -11,7 +11,7 @@ export interface UserDataMapper {
     createUser(body: User): Promise<User>;
     updateUser(userId: number, body: Partial<User>): Promise<void>;
     deleteUser(userId: number): Promise<void>;
-    getUserById(userId: number): Promise<User | null>;
+    getUserById(userId: number, options?: FindOneOptions<User>): Promise<User | null>;
     getUserBy(where: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<User | null>;
     getListUser(
         where: FindOptionsWhere<User> | FindOptionsWhere<User>[],
@@ -52,8 +52,13 @@ export class UserDataMapperImpl implements UserDataMapper {
     }
 
     @WrapErrorStatus()
-    async getUserById(userId: number): Promise<User | null> {
-        return this.entityManager.getRepository(User).findOneBy({ userId: userId });
+    async getUserById(userId: number, options?: FindOneOptions<User>): Promise<User | null> {
+        return this.entityManager.getRepository(User).findOne({
+            where: {
+                userId: userId,
+            },
+            ...options,
+        });
     }
 
     @WrapErrorStatus()

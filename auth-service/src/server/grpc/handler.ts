@@ -1,4 +1,13 @@
 import { sendUnaryData, status } from '@grpc/grpc-js';
+import {
+    CreateRoleRequest,
+    DeleteRoleRequest,
+    GetListRoleRequest,
+    GetRoleByIdRequest,
+    UpdateRoleRequest,
+    UpdateUserRolesRequest,
+} from '@src/modules/roles/dto';
+import { ROLE_MANAGEMENT_OPERATOR_TOKEN, RoleManagementOperator } from '@src/modules/roles/role-management-operator';
 import { CreateUserPasswordRequest, GetUserPasswordByUserIdRequest } from '@src/modules/user-passwords/dto';
 import {
     USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN,
@@ -11,6 +20,7 @@ import {
     GetUserByIdRequest,
     GetUserByUserNameRequest,
     GetUserCountRequest,
+    GetUserRolesRequest,
     LoginByPasswordRequest,
     UpdateUserRequest,
 } from '@src/modules/users/dto';
@@ -27,6 +37,7 @@ export class AuthServiceHandlersFactory {
         private logger: Logger,
         private readonly userManagementOperator: UserManagementOperator,
         private readonly userPasswordManagementOperator: UserPasswordManagementOperator,
+        private readonly roleManagementOperator: RoleManagementOperator,
     ) {}
 
     public getHandlers(): AuthServiceHandlers {
@@ -119,6 +130,72 @@ export class AuthServiceHandlersFactory {
                     return this.handleError(error, callback);
                 }
             },
+            GetUserRoles: async ({ request }, callback) => {
+                try {
+                    const roles = await this.userManagementOperator.getUserRoles(request as GetUserRolesRequest);
+                    return callback(null, { roles: roles });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            CreateRole: async ({ request }, callback) => {
+                try {
+                    const role = await this.roleManagementOperator.createRole(request as CreateRoleRequest);
+                    return callback(null, { role: role });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            UpdateRole: async ({ request }, callback) => {
+                try {
+                    const role = await this.roleManagementOperator.updateRole(request as UpdateRoleRequest);
+                    return callback(null, { role: role });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            DeleteRole: async ({ request }, callback) => {
+                try {
+                    const deleted = await this.roleManagementOperator.deleteRole(request as DeleteRoleRequest);
+                    return callback(null, { deleted: deleted });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            GetRoleById: async ({ request }, callback) => {
+                try {
+                    const role = await this.roleManagementOperator.getRoleById(request as GetRoleByIdRequest);
+                    return callback(null, { role: role });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            GetListRole: async ({ request }, callback) => {
+                try {
+                    const roles = await this.roleManagementOperator.getListRole(request as GetListRoleRequest);
+                    return callback(null, { roles: roles });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            GetRoleCount: async ({ request }, callback) => {
+                try {
+                    const count = await this.roleManagementOperator.getRoleCount(request);
+                    return callback(null, { count: count });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            UpdateUserRoles: async ({ request }, callback) => {
+                try {
+                    const updated = await this.roleManagementOperator.updateUserRoles(
+                        request as UpdateUserRolesRequest,
+                    );
+                    return callback(null, { updated: updated });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
         };
     }
 
@@ -148,6 +225,7 @@ injected(
     LOGGER_TOKEN,
     USER_MANAGEMENT_OPERATOR_TOKEN,
     USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN,
+    ROLE_MANAGEMENT_OPERATOR_TOKEN,
 );
 
 export const AUTH_SERVICE_HANDLERS_FACTORY_TOKEN = token<AuthServiceHandlersFactory>('AuthServiceHandlersFactory');
