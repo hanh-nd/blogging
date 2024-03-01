@@ -20,7 +20,7 @@
         "test-watch": "jest --watchAll --no-cache --coverage"
     },
     "keywords": [],
-    "useror": "",
+    "author": "",
     "license": "ISC",
     "dependencies": {
         "@grpc/grpc-js": "^1.10.0",
@@ -54,6 +54,7 @@
         "@ef-carbon/tspm": "^2.2.5",
         "@jest/globals": "^29.7.0",
         "@types/bcrypt": "^5.0.2",
+        "@types/jsonwebtoken": "^9.0.6",
         "@types/minimist": "^1.2.5",
         "@types/node": "^20.11.17",
         "jest": "^29.7.0",

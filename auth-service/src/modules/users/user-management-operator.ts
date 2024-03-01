@@ -7,6 +7,7 @@ import { ItemExistedException, ItemNotFoundException, UnAuthorizedException } fr
 import { validateRequest } from '@src/utils/request';
 import { injected, token } from 'brandi';
 import { FindOptionsWhere, Like } from 'typeorm';
+import { TOKEN_GENERATOR_TOKEN, TokenGenerator } from '../tokens/token-generator';
 import {
     AuthResponse,
     CreateUserRequest,
@@ -38,6 +39,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         private readonly userDataMapper: UserDataMapper,
         private readonly userPasswordDataMapper: UserPasswordDataMapper,
         private readonly crypto: Crypto,
+        private readonly tokenGenerator: TokenGenerator,
     ) {}
 
     async createUser(request: CreateUserRequest): Promise<User> {
@@ -158,10 +160,16 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         const isCorrectPassword = await this.crypto.comparePassword(password, userPassword.password);
         if (!isCorrectPassword) throw new UnAuthorizedException('Invalid credentials');
 
-        // TODO: create access token
+        const token = await this.tokenGenerator.encode({
+            userId: user.userId,
+            userName: user.userName,
+            email: user.email,
+            displayName: user.displayName,
+        });
+
         return {
-            accessToken: 'access-token',
-            refreshToken: 'refresh-token',
+            user,
+            token,
         };
     }
 
@@ -179,6 +187,12 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
     }
 }
 
-injected(UserManagementOperatorImpl, USER_DATA_MAPPER_TOKEN, USER_PASSWORD_DATA_MAPPER_TOKEN, CRYPTO_TOKEN);
+injected(
+    UserManagementOperatorImpl,
+    USER_DATA_MAPPER_TOKEN,
+    USER_PASSWORD_DATA_MAPPER_TOKEN,
+    CRYPTO_TOKEN,
+    TOKEN_GENERATOR_TOKEN,
+);
 
 export const USER_MANAGEMENT_OPERATOR_TOKEN = token<UserManagementOperator>('UserManagementOperator');

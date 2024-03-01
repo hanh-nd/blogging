@@ -1,4 +1,5 @@
 import { AuthProvider, BaseGetListOptions, BaseGetListRequest } from '@src/constants';
+import { User } from '@src/dataaccess/db/entities';
 import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateUserRequest {
@@ -66,8 +67,8 @@ export class LoginByPasswordRequest {
 }
 
 export type AuthResponse = {
-    accessToken: string;
-    refreshToken: string;
+    user: User;
+    token: string;
 };
 
 export class GetUserRolesRequest {

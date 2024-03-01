@@ -16,14 +16,14 @@ export async function startGRPCServer(envPath?: string): Promise<void> {
     const container = new Container();
 
     // binding services
+    utils.bindToContainer(container);
     config.bindToContainer(container);
     cache.bindToContainer(container);
     await db.bindToContainer(container);
     await kafka.bindToContainer(container);
     jobs.bindToContainer(container);
-    modules.bindToContainer(container);
+    await modules.bindToContainer(container);
     gRPCService.bindToContainer(container);
-    utils.bindToContainer(container);
 
     const server = container.get(AUTH_SERVICE_GRPC_SERVER_TOKEN);
     server.loadProtoAndStart('src/proto/service/auth_service.proto');

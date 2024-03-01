@@ -125,7 +125,7 @@ export class AuthServiceHandlersFactory {
                     const authResponse = await this.userManagementOperator.loginByPassword(
                         request as LoginByPasswordRequest,
                     );
-                    return callback(null, { token: authResponse });
+                    return callback(null, authResponse);
                 } catch (error) {
                     return this.handleError(error, callback);
                 }

@@ -20,7 +20,7 @@ export async function startKafkaConsumer(envPath?: string): Promise<void> {
     await db.bindToContainer(container);
     await kafka.bindToContainer(container);
     jobs.bindToContainer(container);
-    modules.bindToContainer(container);
+    await modules.bindToContainer(container);
     utils.bindToContainer(container);
 
     // do initializations

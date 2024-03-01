@@ -34,11 +34,6 @@ message UserPassword {
     string password = 2;
 }
 
-message Token {
-    string access_token = 1;
-    string refresh_token = 2;
-}
-
 message Role {
     int32 role_id = 1;
     string name = 2;
@@ -137,7 +132,8 @@ message LoginByPasswordRequest {
 }
 
 message LoginByPasswordResponse {
-    Token token = 1;
+    User user = 1;
+    string token = 2;
 }
 
 message GetUserRolesRequest {
