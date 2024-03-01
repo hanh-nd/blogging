@@ -1,3 +1,4 @@
+import { CACHE_CLIENT_TOKEN, CacheClient } from '@src/dataaccess/cache/client';
 import { PUBLIC_KEY_DATA_MAPPER_TOKEN, PublicKeyDataMapper } from '@src/dataaccess/db/mappers/public-key.dm';
 import { WrapErrorStatus } from '@src/decorators/wrap-error-status.decorator';
 import { UnAuthorizedException } from '@src/utils/errors';
@@ -32,15 +33,17 @@ export class JwtGenerator implements TokenGenerator {
     constructor(
         private readonly publicKeyDataMapper: PublicKeyDataMapper,
         private readonly idGenerator: IDGenerator,
+        private readonly cache: CacheClient,
         private readonly logger: Logger,
     ) {}
 
     public static async New(
         publicKeyDataMapper: PublicKeyDataMapper,
         idGenerator: IDGenerator,
+        cache: CacheClient,
         logger: Logger,
     ): Promise<JwtGenerator> {
-        const jwtGenerator = new JwtGenerator(publicKeyDataMapper, idGenerator, logger);
+        const jwtGenerator = new JwtGenerator(publicKeyDataMapper, idGenerator, cache, logger);
 
         const keyPair = generateKeyPairSync('rsa', {
             modulusLength: 2048,
@@ -119,14 +122,18 @@ export class JwtGenerator implements TokenGenerator {
 
     @WrapErrorStatus()
     private async getPublicKey(keyId: number): Promise<string | null> {
+        const cachedPublicKey = await this.cache.get<string>(`public-key:${keyId}`);
+        if (cachedPublicKey) return cachedPublicKey;
+
         const publicKey = await this.publicKeyDataMapper.getKeyById(keyId);
         if (!publicKey) return null;
 
+        await this.cache.set(`public-key:${keyId}`, publicKey.data, Number.POSITIVE_INFINITY);
         return publicKey.data;
     }
 }
 
-injected(JwtGenerator.New, PUBLIC_KEY_DATA_MAPPER_TOKEN, ID_GENERATOR_TOKEN, LOGGER_TOKEN);
+injected(JwtGenerator.New, PUBLIC_KEY_DATA_MAPPER_TOKEN, ID_GENERATOR_TOKEN, CACHE_CLIENT_TOKEN, LOGGER_TOKEN);
 
 export const TOKEN_GENERATOR_FACTORY_TOKEN = token<AsyncFactory<TokenGenerator>>('AsyncFactory<TokenGenerator>');
 export const TOKEN_GENERATOR_TOKEN = token<TokenGenerator>('TokenGenerator');
