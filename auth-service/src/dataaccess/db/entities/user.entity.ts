@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AuthProvider } from '../../../constants';
 import { BaseEntity } from './base-entity';
 import { Role } from './role.entity';
@@ -16,6 +16,7 @@ export class User extends BaseEntity {
         nullable: false,
         name: 'user_name',
     })
+    @Index()
     userName: string;
 
     @Column({
@@ -29,6 +30,7 @@ export class User extends BaseEntity {
         nullable: false,
         name: 'email',
     })
+    @Index()
     email: string;
 
     @Column({

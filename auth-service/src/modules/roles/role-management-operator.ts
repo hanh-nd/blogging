@@ -35,6 +35,8 @@ export class RoleManagementOperatorImpl implements RoleManagementOperator {
 
     async createRole(request: CreateRoleRequest): Promise<Role> {
         await validateRequest(request, CreateRoleRequest);
+        request.name = this.sanitizeRoleName(request.name);
+
         const existedRole = await this.roleDataMapper.getRoleByName(request.name);
         if (existedRole) {
             throw new ItemExistedException('Role already existed');
@@ -52,11 +54,20 @@ export class RoleManagementOperatorImpl implements RoleManagementOperator {
 
         const updateBody = this.roleDataMapper.from({
             ...role,
-            ...(request.name && { name: request.name }),
+            ...(request.name && { name: this.sanitizeRoleName(request.name) }),
         });
 
         await this.roleDataMapper.updateRole(role.roleId, updateBody);
         return updateBody;
+    }
+
+    private sanitizeRoleName(name: string) {
+        return name
+            .replace(/[^A-Za-z0-9\s+]/g, '')
+            .trim()
+            .split(/\s+/)
+            .join('_')
+            .toLocaleLowerCase();
     }
 
     async deleteRole(request: DeleteRoleRequest): Promise<boolean> {

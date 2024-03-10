@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Permission } from './permission.entity';
 
@@ -16,6 +16,7 @@ export class Role extends BaseEntity {
         unique: true,
         name: 'name',
     })
+    @Index()
     name: string;
 
     @ManyToMany(() => Permission, undefined, {

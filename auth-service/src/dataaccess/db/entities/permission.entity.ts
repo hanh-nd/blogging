@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base-entity';
 
 @Entity({
@@ -14,11 +14,13 @@ export class Permission extends BaseEntity {
         nullable: false,
         name: 'resource',
     })
+    @Index()
     resource: string;
 
     @Column({
         nullable: false,
         name: 'action',
     })
+    @Index()
     action: string;
 }
