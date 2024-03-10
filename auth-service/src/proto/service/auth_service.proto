@@ -19,6 +19,12 @@ service AuthService {
     rpc GetListRole(GetListRoleRequest) returns (GetListRoleResponse) {}
     rpc GetRoleCount(GetRoleCountRequest) returns (GetRoleCountResponse) {}
     rpc UpdateUserRoles(UpdateUserRolesRequest) returns (UpdateUserRolesResponse) {}
+    rpc CreatePermission(CreatePermissionRequest) returns (CreatePermissionResponse) {}
+    rpc UpdatePermission(UpdatePermissionRequest) returns (UpdatePermissionResponse) {}
+    rpc DeletePermission(DeletePermissionRequest) returns (DeletePermissionResponse) {}
+    rpc GetPermissionById(GetPermissionByIdRequest) returns (GetPermissionByIdResponse) {}
+    rpc GetListPermission(GetListPermissionRequest) returns (GetListPermissionResponse) {}
+    rpc UpdateRolePermissions(UpdateRolePermissionsRequest) returns (UpdateRolePermissionsResponse) {}
 }
 
 // Bussiness logic
@@ -37,6 +43,12 @@ message UserPassword {
 message Role {
     int32 role_id = 1;
     string name = 2;
+}
+
+message Permission {
+    int32 permission_id = 1;
+    string resource = 2;
+    string action = 3;
 }
 
 // Request - Response
@@ -206,5 +218,55 @@ message UpdateUserRolesRequest {
 }
 
 message UpdateUserRolesResponse {
+    bool updated = 1;
+}
+
+message CreatePermissionRequest {
+    string resource = 1;
+    string action = 2;
+}
+
+message CreatePermissionResponse {
+    Permission permission = 1;
+}
+
+message UpdatePermissionRequest {
+    int32 permission_id = 1;
+    string resource = 2;
+    string action = 3;
+}
+
+message UpdatePermissionResponse {
+    Permission permission = 1;
+}
+
+message DeletePermissionRequest {
+    int32 permission_id = 1;
+}
+
+message DeletePermissionResponse {
+    bool deleted = 1;
+}
+
+message GetPermissionByIdRequest {
+    int32 permission_id = 1;
+}
+
+message GetPermissionByIdResponse {
+    Permission permission = 1;
+}
+
+message GetListPermissionRequest {}
+
+message GetListPermissionResponse {
+    repeated Permission permissions = 1;
+}
+
+message UpdateRolePermissionsRequest {
+    int32 role_id = 1;
+    repeated int32 permission_ids = 2;
+}
+
+message UpdateRolePermissionsResponse {
     bool updated = 1;
 }

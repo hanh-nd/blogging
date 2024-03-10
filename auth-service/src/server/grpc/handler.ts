@@ -196,6 +196,12 @@ export class AuthServiceHandlersFactory {
                     return this.handleError(error, callback);
                 }
             },
+            CreatePermission: async ({ request }, callback) => {},
+            UpdatePermission: async ({ request }, callback) => {},
+            DeletePermission: async ({ request }, callback) => {},
+            GetPermissionById: async ({ request }, callback) => {},
+            GetListPermission: async ({ request }, callback) => {},
+            UpdateRolePermissions: async ({ request }, callback) => {},
         };
     }
 
