@@ -1,5 +1,17 @@
 import { sendUnaryData, status } from '@grpc/grpc-js';
 import {
+    CreatePermissionRequest,
+    DeletePermissionRequest,
+    GetListPermissionRequest,
+    GetPermissionByIdRequest,
+    UpdatePermissionRequest,
+    UpdateRolePermissionsRequest,
+} from '@src/modules/permissions/dto';
+import {
+    PERMISSION_MANAGER_OPERATOR_TOKEN,
+    PermissionManagerOperator,
+} from '@src/modules/permissions/permission-manager-operator';
+import {
     CreateRoleRequest,
     DeleteRoleRequest,
     GetListRoleRequest,
@@ -38,6 +50,7 @@ export class AuthServiceHandlersFactory {
         private readonly userManagementOperator: UserManagementOperator,
         private readonly userPasswordManagementOperator: UserPasswordManagementOperator,
         private readonly roleManagementOperator: RoleManagementOperator,
+        private readonly permissionManagementOperator: PermissionManagerOperator,
     ) {}
 
     public getHandlers(): AuthServiceHandlers {
@@ -196,12 +209,66 @@ export class AuthServiceHandlersFactory {
                     return this.handleError(error, callback);
                 }
             },
-            CreatePermission: async ({ request }, callback) => {},
-            UpdatePermission: async ({ request }, callback) => {},
-            DeletePermission: async ({ request }, callback) => {},
-            GetPermissionById: async ({ request }, callback) => {},
-            GetListPermission: async ({ request }, callback) => {},
-            UpdateRolePermissions: async ({ request }, callback) => {},
+            CreatePermission: async ({ request }, callback) => {
+                try {
+                    const permission = await this.permissionManagementOperator.createPermission(
+                        request as CreatePermissionRequest,
+                    );
+                    return callback(null, { permission: permission });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            UpdatePermission: async ({ request }, callback) => {
+                try {
+                    const permission = await this.permissionManagementOperator.updatePermission(
+                        request as UpdatePermissionRequest,
+                    );
+                    return callback(null, { permission: permission });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            DeletePermission: async ({ request }, callback) => {
+                try {
+                    const deleted = await this.permissionManagementOperator.deletePermission(
+                        request as DeletePermissionRequest,
+                    );
+                    return callback(null, { deleted: deleted });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            GetPermissionById: async ({ request }, callback) => {
+                try {
+                    const permission = await this.permissionManagementOperator.getPermissionById(
+                        request as GetPermissionByIdRequest,
+                    );
+                    return callback(null, { permission: permission });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            GetListPermission: async ({ request }, callback) => {
+                try {
+                    const permissions = await this.permissionManagementOperator.getListPermission(
+                        request as GetListPermissionRequest,
+                    );
+                    return callback(null, { permissions: permissions });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
+            UpdateRolePermissions: async ({ request }, callback) => {
+                try {
+                    const updated = await this.permissionManagementOperator.updateRolePermissions(
+                        request as UpdateRolePermissionsRequest,
+                    );
+                    return callback(null, { updated: updated });
+                } catch (error) {
+                    return this.handleError(error, callback);
+                }
+            },
         };
     }
 
@@ -232,6 +299,7 @@ injected(
     USER_MANAGEMENT_OPERATOR_TOKEN,
     USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN,
     ROLE_MANAGEMENT_OPERATOR_TOKEN,
+    PERMISSION_MANAGER_OPERATOR_TOKEN,
 );
 
 export const AUTH_SERVICE_HANDLERS_FACTORY_TOKEN = token<AuthServiceHandlersFactory>('AuthServiceHandlersFactory');

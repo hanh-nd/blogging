@@ -52,6 +52,13 @@ export class RoleManagementOperatorImpl implements RoleManagementOperator {
             throw new ItemNotFoundException('Role not found');
         }
 
+        if (request.name) {
+            const existedRole = await this.roleDataMapper.getRoleByName(this.sanitizeRoleName(request.name));
+            if (existedRole) {
+                throw new ItemExistedException('Role already existed');
+            }
+        }
+
         const updateBody = this.roleDataMapper.from({
             ...role,
             ...(request.name && { name: this.sanitizeRoleName(request.name) }),

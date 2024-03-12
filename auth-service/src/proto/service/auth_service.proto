@@ -256,7 +256,15 @@ message GetPermissionByIdResponse {
     Permission permission = 1;
 }
 
-message GetListPermissionRequest {}
+message GetListPermissionOptions {
+    optional string keyword = 1;
+}
+
+message GetListPermissionRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    optional GetListPermissionOptions options = 3;
+}
 
 message GetListPermissionResponse {
     repeated Permission permissions = 1;
